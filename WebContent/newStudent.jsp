@@ -40,14 +40,21 @@
 			</ol>
 		</c:when>
 		<c:otherwise>
-		
-			<c:forEach items="${groupMap }" var="map">
-			<c:forEach items="${map.value }" var="student">
+		<c:choose>
+		<c:when test="${! empty groupMap}">
+			<form action="RandomizeAgain.do" method="GET">
+				<input type="text" name="RandomizeAgain" value="Group Size" /> <input
+					type="submit" value="Randomize Again" />
+				<c:forEach items="${groupMap }" var="map">
+					<c:forEach items="${map.value }" var="student">
 				${student.lastName}, ${student.firstName}</br>
-			</c:forEach>
-			</br></br>
-			</c:forEach>
-			
+					</c:forEach>
+					</br>
+					</br>
+				</c:forEach>
+			</form>
+		</c:when>
+		</c:choose>
 		</c:otherwise>
 	</c:choose>
 

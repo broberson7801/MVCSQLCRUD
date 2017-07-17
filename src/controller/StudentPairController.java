@@ -24,8 +24,6 @@ public class StudentPairController {
 	public void setStudentPairDao(StudentPairDAO studentPairDAO) {
 		this.studentPairDao = studentPairDAO;
 	}
-	
-	
 
 	@RequestMapping(path = "NewStudent.do", method = RequestMethod.POST)
 	public ModelAndView addStudentToFile(Student student, RedirectAttributes redir) {
@@ -44,15 +42,15 @@ public class StudentPairController {
 		mv.setViewName("newStudent.jsp");
 		return mv;
 	}
-	
+
 	@RequestMapping(path = "newStudentForm.do", method = RequestMethod.GET)
 	public ModelAndView goToNewStudentForm() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("newStudent.jsp");
 		return mv;
 	}
-	
-	@RequestMapping(path="RemoveStudent", method = RequestMethod.POST)
+
+	@RequestMapping(path = "RemoveStudent", method = RequestMethod.POST)
 	public ModelAndView removeStudent(Student student) {
 		ModelAndView mv = new ModelAndView();
 		studentPairDao.removeStudent(student);
@@ -60,26 +58,42 @@ public class StudentPairController {
 		mv.setViewName("newStudent.jsp");
 		return mv;
 	}
-	
-	@RequestMapping(path="GenerateRandomPair.do", method= RequestMethod.GET)
+
+	@RequestMapping(path = "GenerateRandomPair.do", method = RequestMethod.GET)
 	public ModelAndView generateRandomPairs(@RequestParam("GenerateRandomPair") String groupSizeString) {
 		ModelAndView mv = new ModelAndView();
 		int groupSize = 0;
-		try{
-			 groupSize = Integer.parseInt(groupSizeString);
-			 studentPairDao.getStudentPairs(groupSize);
+		try {
+			groupSize = Integer.parseInt(groupSizeString);
+			studentPairDao.getStudentPairs(groupSize);
 			mv.addObject("groupMap", studentPairDao.getStudentPairs(groupSize));
-			System.out.println(studentPairDao.getStudentPairs(groupSize).size());
 			mv.setViewName("newStudent.jsp");
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			mv.addObject("error", "You did not enter a valid group size!");
 			mv.addObject("studentList", studentPairDao.getStudentList());
 			mv.setViewName("newStudent.jsp");
 		}
-		
+
 		return mv;
 	}
 
+	@RequestMapping(path = "RandomizeAgain.do", method = RequestMethod.GET)
+	public ModelAndView randomizeAgain(@RequestParam("RandomizeAgain") String groupSizeString) {
+		ModelAndView mv = new ModelAndView();
+		int groupSize = 0;
+		try {
+			groupSize = Integer.parseInt(groupSizeString);
+			studentPairDao.getStudentPairs(groupSize);
+			mv.addObject("groupMap", studentPairDao.getStudentPairs(groupSize));
+			mv.setViewName("newStudent.jsp");
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addObject("error", "You did not enter a valid group size!");
+			mv.addObject("studentList", studentPairDao.getStudentList());
+			mv.setViewName("newStudent.jsp");
+		}
+
+		return mv;
+	}
 }
