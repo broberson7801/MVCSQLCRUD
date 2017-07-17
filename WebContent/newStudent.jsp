@@ -10,18 +10,20 @@
 <title>Student Form</title>
 </head>
 <body>
-  
+  <img src="http://fractalfoundation.org/OFCA/neuron1.jpg" id="bg" alt="">
 
-	<h3>Students</h3>
+	<h3 id="newStudentTitle">Students</h3>
 	<form action="NewStudent.do" method="POST">
-		First Name: <input type="text" name="firstName" value="First Name" /><br />
+		<p class="field">First Name: <input type="text" name="firstName" value="First Name" /><br />
 		Last Name: <input type="text" name="lastName" value="Last Name" /><br />
 		Other Information: <input type="text" name="otherInformation"
 			value="Other Information" /><br /> <input type="submit"
 			value="Add Student" />
+		</p>
 	</form>
 	<form action="RemoveStudent.do" method="POST"></form>
 
+	<div class="results">
 	<c:choose>
 		<c:when test="${! empty studentList}">
 			<form action="GenerateRandomPair.do" method="GET">
@@ -49,17 +51,18 @@
 				<input type="text" name="RandomizeAgain" value="Group Size" /> <input
 					type="submit" value="Randomize Again" />
 				<c:forEach items="${groupMap }" var="map">
+				<br>
 					<c:forEach items="${map.value }" var="student">
-				${student.lastName}, ${student.firstName}</br>
+				${student.lastName}, ${student.firstName}<br>
 					</c:forEach>
-					</br>
-					</br>
+					<br>
+					<br>
 				</c:forEach>
 			</form>
 		</c:when>
 		</c:choose>
 		</c:otherwise>
 	</c:choose>
-
+</div>
 </body>
 </html>

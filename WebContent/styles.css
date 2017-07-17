@@ -1,15 +1,52 @@
 #bg {
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-
-  /* Preserve aspet ratio */
-  min-width: 100%;
-  min-height: 100%;
-  z-index: -1;
+	position: fixed;
+	top: 0;
+	left: 0;
+	/* Preserve aspet ratio */
+	min-width: 100%;
+	min-height: 100%;
+	z-index: -1;
 }
 
 #begin {
-  position:fixed;
+	position: absolute;
+	left: 50%;
+	width: auto;
+	margin-left: -120px;
+	bottom: 30%;
+	color: white;
+	background-color: rgba(54, 25, 25, .00004);
+	border-color: rgba(225, 225, 225, 0.0);
+	font-family: cursive;
+	font-size: 70px;
+	text-decoration: underline;
+}
 
+#begin:hover {
+	text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+	font-size: 100px;
+}
+
+#header {
+	text-align: center;
+	color: white;
+	font-style: italic;
+}
+
+#pair {
+	color: white;
+	text-align: center;
+	font-size: 30px;
+}
+
+.field {
+	color: white;
+}
+
+#newStudentTitle {
+	color: white;
+}
+
+.results {
+	color: white;
 }
