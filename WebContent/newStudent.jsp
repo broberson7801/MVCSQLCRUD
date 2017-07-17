@@ -6,9 +6,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="styles.css" rel="stylesheet">
 <title>Student Form</title>
 </head>
 <body>
+  
+
 	<h3>Students</h3>
 	<form action="NewStudent.do" method="POST">
 		First Name: <input type="text" name="firstName" value="First Name" /><br />
