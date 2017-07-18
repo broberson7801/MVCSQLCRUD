@@ -62,34 +62,41 @@ public class StudentPairController {
 	@RequestMapping(path = "GenerateRandomPair.do", method = RequestMethod.GET)
 	public ModelAndView generateRandomPairs(@RequestParam("GenerateRandomPair") String groupSizeString) {
 		ModelAndView mv = new ModelAndView();
-		int groupSize = 0;
-		try {
-			groupSize = Integer.parseInt(groupSizeString);
-			studentPairDao.getStudentPairs(groupSize);
-			mv.addObject("groupMap", studentPairDao.getStudentPairs(groupSize));
-			mv.setViewName("newStudent.jsp");
-		} catch (Exception e) {
-			e.printStackTrace();
-			mv.addObject("error", "You did not enter a valid group size!");
-			mv.addObject("studentList", studentPairDao.getStudentList());
-			mv.setViewName("newStudent.jsp");
-		}
-
+		mv = numberEntryValidation(groupSizeString);
 		return mv;
+
 	}
 
 	@RequestMapping(path = "RandomizeAgain.do", method = RequestMethod.GET)
 	public ModelAndView randomizeAgain(@RequestParam("RandomizeAgain") String groupSizeString) {
 		ModelAndView mv = new ModelAndView();
+		mv = numberEntryValidation(groupSizeString);
+		return mv;
+		
+	}
+
+	private ModelAndView numberEntryValidation(String groupSizeString) {
+		ModelAndView mv = new ModelAndView();
 		int groupSize = 0;
 		try {
 			groupSize = Integer.parseInt(groupSizeString);
-			studentPairDao.getStudentPairs(groupSize);
-			mv.addObject("groupMap", studentPairDao.getStudentPairs(groupSize));
-			mv.setViewName("newStudent.jsp");
+			if (groupSize <= 0) {
+				mv.addObject("error", "You can't have a group of size " + groupSize + "!");
+				mv.addObject("studentList", studentPairDao.getStudentList());
+				mv.setViewName("newStudent.jsp");
+
+			} else if (groupSize > studentPairDao.getStudentList().size()) {
+				mv.addObject("error", "You can't have a bigger group than the number of available students!");
+				mv.addObject("studentList", studentPairDao.getStudentList());
+				mv.setViewName("newStudent.jsp");
+			} else {
+				studentPairDao.getStudentPairs(groupSize);
+				mv.addObject("groupMap", studentPairDao.getStudentPairs(groupSize));
+				mv.setViewName("newStudent.jsp");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			mv.addObject("error", "You did not enter a valid group size!");
+			mv.addObject("error", groupSizeString + " is not a valid entry");
 			mv.addObject("studentList", studentPairDao.getStudentList());
 			mv.setViewName("newStudent.jsp");
 		}

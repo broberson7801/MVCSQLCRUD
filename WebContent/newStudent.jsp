@@ -14,7 +14,7 @@
 
 	<h3 id="newStudentTitle">Students</h3>
 	<form action="NewStudent.do" method="POST">
-		<p class="field">First Name: <input type="text" name="firstName" value="First Name" class="submit"/><br />
+		<p class="field">First Name: <input type="text" name="FirstName" value="First Name" class="submit"/><br />
 		Last Name: <input type="text" name="lastName" value="Last Name" class="submit" /><br />
 		Other Information: <input type="text" name="otherInformation"
 			value="Other Information" class="submit" /><br /> <input type="submit"
