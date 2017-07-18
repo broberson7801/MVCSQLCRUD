@@ -41,6 +41,7 @@
 
 .field {
 	color: white;
+	font-weight: 10px;
 }
 
 #newStudentTitle {
@@ -49,4 +50,15 @@
 
 .results {
 	color: white;
+}
+
+.submit:hover  {
+	transform: scale(1.2, 1.2);
+}
+.group:hover  {
+	transform: scale(1.2, 1.2);
+}
+
+submit:hover::after {
+  opacity: 1;
 }

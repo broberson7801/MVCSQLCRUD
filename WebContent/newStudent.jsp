@@ -14,11 +14,11 @@
 
 	<h3 id="newStudentTitle">Students</h3>
 	<form action="NewStudent.do" method="POST">
-		<p class="field">First Name: <input type="text" name="firstName" value="First Name" /><br />
-		Last Name: <input type="text" name="lastName" value="Last Name" /><br />
+		<p class="field">First Name: <input type="text" name="firstName" value="First Name" class="submit"/><br />
+		Last Name: <input type="text" name="lastName" value="Last Name" class="submit" /><br />
 		Other Information: <input type="text" name="otherInformation"
-			value="Other Information" /><br /> <input type="submit"
-			value="Add Student" />
+			value="Other Information" class="submit" /><br /> <input type="submit"
+			value="Add Student" class="submit" />
 		</p>
 	</form>
 	<form action="RemoveStudent.do" method="POST"></form>
@@ -27,19 +27,19 @@
 	<c:choose>
 		<c:when test="${! empty studentList}">
 			<form action="GenerateRandomPair.do" method="GET">
-				<input type="text" name="GenerateRandomPair" value="Group Size" />
-				<input type="submit" value="Get Randomized Pairings!" />
+				<input type="text" name="GenerateRandomPair" value="Group Size" class="group" />
+				<input type="submit" value="Get Randomized Pairings!" class="submit" />
 			</form>
 			${error}
 			<ol>
 				<c:forEach items="${studentList}" var="s">
-					<li>${s.firstName}${s.lastName}${s.otherInformation}</li>
+					<li>${s.firstName} ${s.lastName} ${s.otherInformation}</li>
 					<form action="RemoveStudent.do" method="POST">
 						<input type="hidden" name="firstName" value="${s.firstName}" /> <input
 							type="hidden" name="lastName" value="${s.lastName}" /><input
 							type="hidden" name="otherInformation"
 							value="${s.otherInformation}" /> <input type="submit"
-							value="RemoveStudent" />
+							value="RemoveStudent" class="submit"/>
 					</form>
 				</c:forEach>
 			</ol>
@@ -48,8 +48,8 @@
 		<c:choose>
 		<c:when test="${! empty groupMap}">
 			<form action="RandomizeAgain.do" method="GET">
-				<input type="text" name="RandomizeAgain" value="Group Size" /> <input
-					type="submit" value="Randomize Again" />
+				<input type="text" name="RandomizeAgain" value="Group Size" class="group" /> <input
+					type="submit" value="Randomize Again" class="submit" />
 				<c:forEach items="${groupMap }" var="map">
 				<br>
 					<c:forEach items="${map.value }" var="student">
