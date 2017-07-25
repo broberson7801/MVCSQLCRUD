@@ -38,7 +38,6 @@ public class StudentPairController {
 	public ModelAndView studentAdded(Student student) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("studentList", studentPairDao.getStudentList());
-		System.out.println(studentPairDao.getStudentList().size());
 		mv.setViewName("newStudent.jsp");
 		return mv;
 	}

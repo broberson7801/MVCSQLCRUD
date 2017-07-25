@@ -14,7 +14,8 @@
 
 	<h3 id="newStudentTitle">Students</h3>
 	<form action="NewStudent.do" method="POST">
-		<p class="field">First Name: <input type="text" name="FirstName" value="First Name" class="submit"/><br />
+		<p class="field">
+		First Name: <input type="text" name="FirstName" value="First Name" class="submit"/><br />
 		Last Name: <input type="text" name="lastName" value="Last Name" class="submit" /><br />
 		Other Information: <input type="text" name="otherInformation"
 			value="Other Information" class="submit" /><br /> <input type="submit"
@@ -35,8 +36,9 @@
 				<c:forEach items="${studentList}" var="s">
 					<li>${s.firstName} ${s.lastName} ${s.otherInformation}</li>
 					<form action="RemoveStudent.do" method="POST">
-						<input type="hidden" name="firstName" value="${s.firstName}" /> <input
-							type="hidden" name="lastName" value="${s.lastName}" /><input
+						<input type="hidden" name="firstName" value="${s.firstName}" /> 
+						<input type="hidden" name="lastName" value="${s.lastName}" />
+							<input
 							type="hidden" name="otherInformation"
 							value="${s.otherInformation}" /> <input type="submit"
 							value="RemoveStudent" class="submit"/>
