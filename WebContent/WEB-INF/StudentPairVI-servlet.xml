@@ -11,6 +11,8 @@
   <context:component-scan base-package="controller"/>
   <context:component-scan base-package="data"/>
    <mvc:annotation-driven/>
+  <bean id="dao" class="data.StudentPairDAO_Impl">
+  </bean>
 
 <!-- <bean id="viewResolver"
     	      class="org.springframework.web.servlet.view.InternalResourceViewResolver" >

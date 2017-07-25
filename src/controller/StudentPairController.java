@@ -27,6 +27,7 @@ public class StudentPairController {
 
 	@RequestMapping(path = "NewStudent.do", method = RequestMethod.POST)
 	public ModelAndView addStudentToFile(Student student, RedirectAttributes redir) {
+		System.out.println("in addedStudentToFile() in controller");
 		studentPairDao.addStudent(student);
 		ModelAndView mv = new ModelAndView();
 		redir.addFlashAttribute("student", student);
@@ -36,9 +37,9 @@ public class StudentPairController {
 
 	@RequestMapping(path = "studentAdded.do", method = RequestMethod.GET)
 	public ModelAndView studentAdded(Student student) {
+		System.out.println("in studentAdded() inside of controller");
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("studentList", studentPairDao.getStudentList());
-		System.out.println(studentPairDao.getStudentList().size());
 		mv.setViewName("newStudent.jsp");
 		return mv;
 	}
@@ -51,9 +52,9 @@ public class StudentPairController {
 	}
 
 	@RequestMapping(path = "RemoveStudent", method = RequestMethod.POST)
-	public ModelAndView removeStudent(Student student) {
+	public ModelAndView removeStudent(Integer id) {
 		ModelAndView mv = new ModelAndView();
-		studentPairDao.removeStudent(student);
+		studentPairDao.removeStudent(id);
 		mv.addObject("studentList", studentPairDao.getStudentList());
 		mv.setViewName("newStudent.jsp");
 		return mv;
