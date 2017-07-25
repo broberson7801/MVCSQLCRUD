@@ -1,39 +1,36 @@
 package data;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
+
+@Component
 public class StudentPairDAO_Impl implements StudentPairDAO {
 	private int groupSize;
 	private List<Student> studentList;
 	private Map<Integer, List<Student>> studentPairs;
-	private static String url = "jdbc:mysql://localhost:3306/studentpairvi";
-	private String user = "studentuser";
-	private String pass = "studentuser";
-
-	public StudentPairDAO_Impl() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			System.err.println("Error loading MySQL Driver!!!");
-		}
-	}
+	private static final String FILE_NAME = "student_list.txt";
 
 	public void setStudentPairs(Map<Integer, List<Student>> studentPairs) {
 		this.studentPairs = studentPairs;
 	}
 
+	@Autowired
+	private WebApplicationContext wac;
 
 	@Override
 	public List<Student> getStudentList() {
@@ -42,6 +39,41 @@ public class StudentPairDAO_Impl implements StudentPairDAO {
 
 	public void setStudentList(List<Student> studentList) {
 		this.studentList = studentList;
+	}
+
+	public void createStudentFile() {
+		String filePath = wac.getServletContext().getRealPath(FILE_NAME);
+		System.out.println(filePath);
+
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter(filePath));
+			for (Student s : studentList) {
+				out.println(s.getFirstName() + "," + s.getLastName() + "," + s.getOtherInformation());
+
+			}
+			out.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+	}
+
+	@PostConstruct
+	public void init() {
+		try (InputStream is = wac.getServletContext().getResourceAsStream(FILE_NAME);
+				BufferedReader buf = new BufferedReader(new InputStreamReader(is));) {
+			String line = buf.readLine();
+			while ((line = buf.readLine()) != null) {
+				String[] tokens = line.split(",");
+				String firstName = tokens[0];
+				String lastName = tokens[1];
+				String otherInformation = tokens[2];
+
+				studentList.add(new Student(firstName, lastName, otherInformation));
+			}
+		} catch (Exception e) {
+			System.err.println(e);
+		}
 	}
 
 	@Override
@@ -65,66 +97,24 @@ public class StudentPairDAO_Impl implements StudentPairDAO {
 	}
 
 	@Override
-	public Student addStudent(Student student) {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, pass);
-			conn.setAutoCommit(false); // START TRANSACTION
-			String sql = "INSERT INTO student (first_name, last_name, other_information) " + " VALUES (?,?,?)";
-			System.out.println("in addStudent() after INSERT statement");
-			PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, student.getFirstName());
-			stmt.setString(2, student.getLastName());
-			stmt.setString(3, student.getOtherInformation());
-			int updateCount = stmt.executeUpdate();
-			ResultSet rs = stmt.getGeneratedKeys();
-			if (rs.next()) {
-				student.setId(rs.getInt(1));
-				
-			}
-			conn.commit(); // COMMIT TRANSACTION
-
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException sqle2) {
-					System.err.println("Error trying to rollback");
-				}
-			}
-			throw new RuntimeException("Error inserting student " + student);
+	public void addStudent(Student student) {
+		if (studentList == null) {
+			studentList = new ArrayList<>();
+			studentList.add(student);
+		} else {
+			studentList.add(student);
 		}
-		return student;
+		createStudentFile();
 	}
 
 	@Override
-	public boolean removeStudent(Integer id) {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, pass);
-			conn.setAutoCommit(false); // START TRANSACTION
-			String sql = "DELETE FROM student WHERE id = ?";
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, id);
-			int updateCount = stmt.executeUpdate();
-			sql = "DELETE FROM student WHERE id = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1, id);
-			updateCount = stmt.executeUpdate();
-			conn.commit(); // COMMIT TRANSACTION
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException sqle2) {
-					System.err.println("Error trying to rollback");
-				}
-			}
-			return false;
+	public void removeStudent(Student student) {
+		if (studentList.remove(student)) {
+			createStudentFile();
+
+		} else {
+			System.out.println("No student removed");
 		}
-		return true;
 
 	}
 
@@ -138,39 +128,30 @@ public class StudentPairDAO_Impl implements StudentPairDAO {
 
 	@Override
 	public Map<Integer, List<Student>> getStudentPairs(Integer groupSize) {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(url, user, pass);
-			conn.setAutoCommit(false); // START TRANSACTION
+		studentPairs = new HashMap<>();
+		List<Student> tempList = new ArrayList<Student>(studentList);
+		Collections.shuffle(tempList);
+		int result = tempList.size() / groupSize;
+		int remainder = tempList.size() % groupSize;
+		if (tempList.size() >= groupSize) {
+			for (int i = 0; i < result; i++) {
+				List<Student> group = new ArrayList<Student>();
+				for (int j = 0; j < groupSize; j++) {
 
-			studentPairs = new HashMap<>();
-			List<Student> tempList = new ArrayList<Student>(studentList);
-			Collections.shuffle(tempList);
-			int result = tempList.size() / groupSize;
-			int remainder = tempList.size() % groupSize;
-			if (tempList.size() >= groupSize) {
-				for (int i = 0; i < result; i++) {
-					List<Student> group = new ArrayList<Student>();
-					for (int j = 0; j < groupSize; j++) {
-
-						group.add(tempList.remove(0));
-					}
-					studentPairs.put(i + 1, group);
+					group.add(tempList.remove(0));
 				}
-				while (remainder > 0) {
-					for (int k = 0; k < studentPairs.size(); k++) {
-						if (remainder != 0) {
-							List<Student> newList = studentPairs.get(k + 1);
-							newList.add(tempList.remove(0));
-							remainder--;
-							studentPairs.put(k + 1, newList);
-						}
+				studentPairs.put(i + 1, group);
+			}
+			while (remainder > 0) {
+				for (int k = 0; k < studentPairs.size(); k++) {
+					if (remainder != 0) {
+						List<Student> newList = studentPairs.get(k + 1);
+						newList.add(tempList.remove(0));
+						remainder--;
+						studentPairs.put(k + 1, newList);
 					}
 				}
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return studentPairs;
 	}
